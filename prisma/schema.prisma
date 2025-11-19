@@ -18,7 +18,7 @@ model Company {
   id        String   @id @default(cuid())
   name      String   @unique
   createdAt DateTime @default(now())
-
+  dayRecords  DayRecord[]
   users     User[]
 }
 
@@ -31,7 +31,49 @@ model User {
 
   companyId  String
   company    Company  @relation(fields: [companyId], references: [id])
+  records    Record[]
 
   createdAt  DateTime @default(now())
 }
+model DayRecord {
+  id          String     @id @default(uuid())
+  date        DateTime
+  isOpen      Boolean    @default(true)
 
+  companyId   String
+  company     Company    @relation(fields: [companyId], references: [id])
+
+  records     Record[]
+  createdAt   DateTime   @default(now())
+  finishedAt  DateTime?
+}
+
+model Record {
+  id          String       @id @default(uuid())
+  title       String
+  type        RecordType
+  total       Float        @default(0)
+
+  userId      String
+  user        User         @relation(fields: [userId], references: [id])
+
+  dayRecordId String
+  dayRecord   DayRecord    @relation(fields: [dayRecordId], references: [id])
+
+  items       RecordItem[]
+  createdAt   DateTime     @default(now())
+}
+
+model RecordItem {
+  id        String    @id @default(uuid())
+  title     String
+  price     Float
+
+  recordId  String
+  record    Record    @relation(fields: [recordId], references: [id])
+}
+
+enum RecordType {
+  SALE
+  WITHDRAW
+}
