@@ -26,9 +26,12 @@ export class UserService {
     });
   }
 
-  async getEmployees(companyId: string) {
+  async getEmployees(adminUser: any) {
+    if (!adminUser.isAdmin){
+      throw new ForbiddenException('Only admins can list employees.');
+    }
     return this.prisma.user.findMany({
-      where: { companyId },
+      where: { companyId: adminUser.companyId},
     });
   }
 }

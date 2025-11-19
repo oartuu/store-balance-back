@@ -129,12 +129,9 @@ export class RecordsService {
     const where: any = { companyId: user.companyId };
 
 
-    if(!user.admin){
+    if(!user.isAdmin){
       throw new ForbiddenException('Only admins can list day records.');
-    }
-
-
-    if (dto.startDate || dto.endDate) {
+    }else if (dto.startDate || dto.endDate) {
       where.date = {};
       if (dto.startDate) where.date.gte = new Date(dto.startDate);
       if (dto.endDate) where.date.lte = new Date(dto.endDate);

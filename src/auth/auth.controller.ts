@@ -33,10 +33,10 @@ export class AuthController {
     // req.user é injetado pelo JWT guard e contém: userId, companyId, isAdmin
     return this.userService.createEmployee(dto, req.user);
   }
-
+  /* --------------------LIST EMPLOYEES (ADMIN ONLY)-----------------------*/
   @UseGuards(JwtAuthGuard)
   @Get('employees')
   async getEmployees(@Req() req) {
-    return this.userService.getEmployees(req.user.companyId);
+    return this.userService.getEmployees(req.user);
   }
 }
