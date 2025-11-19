@@ -13,25 +13,20 @@ export class AuthController {
     private userService: UserService,
   ) {}
 
-  // ----------------------------
-  // Registrar Admin + Empresa
-  // ----------------------------
+  /* ---------------------------- REGISTER ADMIN + COMPANY -----------------*/
   @Post('register')
   async registerAdmin(@Body() dto: RegisterAdminDto) {
     return this.authService.registerAdmin(dto);
   }
 
-  // ----------------------------
-  // Login de qualquer usuário
-  // ----------------------------
+  /* --------------------USER LOGIN-----------------------*/
   @Post('login')
   async login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
 
-  // ----------------------------
-  // Criar funcionário (somente admin)
-  // ----------------------------
+  /* --------------------CREATE EMPLOYEE (ADMIN ONLY)-----------------------*/
+
   @UseGuards(JwtAuthGuard)
   @Post('employees')
   async createEmployee(@Body() dto: CreateEmployeeDto, @Req() req) {

@@ -14,14 +14,15 @@ export class AuthService {
   ) {}
 
   async registerAdmin(dto: RegisterAdminDto) {
-    // 1️⃣ Criar empresa
+    /* --------------------CREATE COMPANY-----------------------*/
     const company = await this.prisma.company.create({
       data: {
         name: dto.companyName,
       },
     });
 
-    // 2️⃣ Criar usuário admin vinculado à empresa
+    /* --------------------CREATE COMPANY LINKED ADMIN-----------------------*/
+
     const hashedPassword = await bcrypt.hash(dto.password, 10);
 
     const user = await this.prisma.user.create({
@@ -34,7 +35,8 @@ export class AuthService {
       },
     });
 
-    // 3️⃣ Gerar token JWT
+    /* --------------------GENERATE JWT-----------------------*/
+
     const token = await this.generateToken(user);
 
     return { user, company, token };
@@ -50,9 +52,11 @@ export class AuthService {
     return this.jwt.sign(payload);
   }
 
+  /* --------------------CREATE EMPLOYEE-----------------------*/
+
   async createEmployee(dto: CreateEmployeeDto, adminUser: any) {
     if (!adminUser.isAdmin) {
-      throw new ForbiddenException('Apenas admins podem criar funcionários.');
+      throw new ForbiddenException('Only admins can create employees.');
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);
@@ -68,22 +72,24 @@ export class AuthService {
     });
   }
 
+  /* --------------------USER LOGIN-----------------------*/
+
   async login(dto: LoginDto) {
     const company = await this.prisma.company.findUnique({
       where: { name: dto.company },
     });
 
-    if (!company) throw new ForbiddenException('Empresa não encontrada');
+    if (!company) throw new ForbiddenException('Company not found');
 
     const user = await this.prisma.user.findFirst({
       where: { email: dto.email, companyId: company.id },
     });
 
-    if (!user) throw new ForbiddenException('Usuário ou senha inválidos');
+    if (!user) throw new ForbiddenException('User or password invalid');
 
     const passwordMatch = await bcrypt.compare(dto.password, user.password);
     if (!passwordMatch)
-      throw new ForbiddenException('Usuário ou senha inválidos');
+      throw new ForbiddenException('User or password invalid');
 
     const token = await this.generateToken(user);
 

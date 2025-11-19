@@ -14,29 +14,29 @@ import { ListRecordsDto } from './dto/list-records.dto';
 export class RecordsService {
   constructor(private prisma: PrismaService) {}
 
-  /* -------------------- INICIAR DIA -------------------- */
+  /* -------------------- START DAY -------------------- */
   async startDay(user) {
     if (!user.isAdmin) {
-      throw new ForbiddenException('Apenas admins podem iniciar o dia.');
+      throw new ForbiddenException('Only admins can start a day.');
     }
 
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Verifica se já existe um dayRecord para hoje
     const existing = await this.prisma.dayRecord.findFirst({
       where: { date: today, companyId: user.companyId },
     });
 
     if (existing) {
       if (existing.isOpen) {
-        return existing; // já existe aberto, apenas retorna
+        return existing;
       } else {
-        throw new BadRequestException('O dia de hoje já foi fechado.');
+        throw new BadRequestException('The day is already closed.');
       }
     }
 
-    // Cria novo dayRecord
+    /* -------------------- CREATE NEW DAY RECORD -----------------------*/
+
     return this.prisma.dayRecord.create({
       data: {
         date: today,
@@ -46,18 +46,20 @@ export class RecordsService {
     });
   }
 
-  /* -------------------- CRIAR REGISTRO -------------------- */
+  /* -------------------- CREATE RECORD -------------------- */
   async createRecord(dto: CreateRecordDto, user) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // Procura dayRecord aberto para hoje
+    
     let day = await this.prisma.dayRecord.findFirst({
       where: { date: today, companyId: user.companyId },
     });
 
     if (!day) {
-      // Não existe nenhum dayRecord → cria novo
+      if (!user.admin){
+        throw new ForbiddenException('Day not found. Await admin approval.');
+      }
       day = await this.prisma.dayRecord.create({
         data: {
           date: today,
@@ -66,16 +68,16 @@ export class RecordsService {
         },
       });
     } else if (!day.isOpen) {
-      // Existe dayRecord, mas fechado → erro
+      
       throw new BadRequestException(
-        'Não é possível adicionar registros a um dia que já foi fechado.',
+        'You cant add records to a closed day.',
       );
     }
 
-    // Calcula o total
+    
     const total = dto.items.reduce((acc, item) => acc + item.price, 0);
 
-    // Cria registro + items em cascade
+   
     const record = await this.prisma.record.create({
       data: {
         title: dto.title,
@@ -92,10 +94,10 @@ export class RecordsService {
 
     return record;
   }
-  /* -------------------- FINALIZAR DIA -------------------- */
+  /* -------------------- FINISH DAY -------------------- */
   async finishDay(user) {
     if (!user.isAdmin) {
-      throw new ForbiddenException('Apenas admins podem finalizar o dia.');
+      throw new ForbiddenException('Only admins can finish a day.');
     }
 
     const today = new Date();
@@ -106,11 +108,11 @@ export class RecordsService {
     });
 
     if (!day) {
-      throw new BadRequestException('O dia ainda não foi iniciado.');
+      throw new BadRequestException('The day is already started.');
     }
 
     if (!day.isOpen) {
-      throw new BadRequestException('O dia já foi finalizado.');
+      throw new BadRequestException('The day is already closed.');
     }
 
     return this.prisma.dayRecord.update({
@@ -122,13 +124,13 @@ export class RecordsService {
     });
   }
 
-  /* -------------------- LISTAR TODAS AS DAY RECORDS -------------------- */
+  /* -------------------- LIST DAY RECORDS -------------------- */
   async listDayRecords(user, dto: ListDayRecordsDto) {
     const where: any = { companyId: user.companyId };
 
 
     if(!user.admin){
-      throw new ForbiddenException('Apenas admins podem listar os registros de dias.');
+      throw new ForbiddenException('Only admins can list day records.');
     }
 
 
@@ -145,7 +147,7 @@ export class RecordsService {
     });
   }
 
-  /* -------------------- LISTAR TODAS AS RECORDS DE UM DIA -------------------- */
+  /* ----------------- LIST RECORDS OF A DAY ------------------- */
   async listRecordsByDay(user, dto: ListRecordsDto) {
     const targetDate = dto.date ? new Date(dto.date) : new Date();
     targetDate.setHours(0, 0, 0, 0);
@@ -156,7 +158,7 @@ export class RecordsService {
     });
 
     if (!day) {
-      throw new NotFoundException('Nenhum registro encontrado para esta data.');
+      throw new NotFoundException('No records found for this day.');
     }
 
     return day;
