@@ -15,6 +15,21 @@ export class AuthService {
 
   async registerAdmin(dto: RegisterAdminDto) {
     /* --------------------CREATE COMPANY-----------------------*/
+    const existingCompany = await this.prisma.company.findUnique({
+      where: { name: dto.companyName },
+    });
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+
+    if (existingCompany) {
+      throw new ForbiddenException('Empresa já cadastrada');
+    }
+
+    if (existingEmail) {
+      throw new ForbiddenException('Email já cadastrado');
+    }
+
     const company = await this.prisma.company.create({
       data: {
         name: dto.companyName,
@@ -34,14 +49,11 @@ export class AuthService {
         companyId: company.id,
       },
     });
-
-    /* --------------------GENERATE JWT-----------------------*/
-
     const token = await this.generateToken(user);
 
     return { user, company, token };
   }
-
+  /* --------------------GENERATE JWT-----------------------*/
   private async generateToken(user: any) {
     const payload = {
       sub: user.id,
@@ -57,6 +69,12 @@ export class AuthService {
   async createEmployee(dto: CreateEmployeeDto, adminUser: any) {
     if (!adminUser.isAdmin) {
       throw new ForbiddenException('Only admins can create employees.');
+    }
+    const existingEmail = await this.prisma.user.findUnique({
+      where: { email: dto.email },
+    });
+    if (existingEmail) {
+      throw new ForbiddenException('Email já cadastrado');
     }
 
     const hashedPassword = await bcrypt.hash(dto.password, 10);

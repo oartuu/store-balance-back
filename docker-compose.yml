@@ -1,18 +1,18 @@
 services:
-  api:
-    build: .
-    container_name: local-api
-    restart: always
-    environment:
-      DATABASE_URL: 'postgresql://arthur:senha123@postgres:5432/meu_banco_dev?schema=public'
-      JWT_SECRET: 'minhaChaveSecreta123'
-      PORT: 5000
-    ports:
-     - '5000:5000'
-    networks:
-      - app-network
-    depends_on:
-      - postgres
+  # api:
+  #   build: .
+  #   container_name: local-api
+  #   restart: always
+  #   environment:
+  #     DATABASE_URL: 'postgresql://arthur:senha123@postgres:5432/meu_banco_dev?schema=public'
+  #     JWT_SECRET: 'minhaChaveSecreta123'
+  #     PORT: 5000
+  #   ports:
+  #    - '5000:5000'
+  #   networks:
+  #     - app-network
+  #   depends_on:
+  #     - postgres
   postgres:
     image: postgres:16
     container_name: local-postgres
