@@ -97,8 +97,7 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const refreshTokenId = req.cookies['refreshTokenId'];
+  async logout(@Req() req: Request,@Body('refreshTokenId') refreshTokenId: string, @Res({ passthrough: true }) res: Response) {
 
     // Chama serviço para deletar refresh token no DB
     await this.authService.logout(refreshTokenId);
