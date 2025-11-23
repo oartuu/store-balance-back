@@ -36,21 +36,24 @@ export class AuthController {
       await this.authService.registerAdmin(dto);
     res.cookie('refreshTokenId', refreshTokenId, {
       httpOnly: true,
-      secure: true, // garante envio só via HTTPS em produção
-      sameSite: 'strict', // ou o que fizer sentido pra sua política
+      secure: true,
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
     });
 
     res.cookie('userName', user.name, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -68,20 +71,23 @@ export class AuthController {
     // define o cookie com o refreshTokenId
     res.cookie('refreshTokenId', refreshTokenId, {
       httpOnly: true,
-      secure: true, // garante envio só via HTTPS em produção
-      sameSite: 'strict', // ou o que fizer sentido pra sua política
+      secure: true,
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
     });
     res.cookie('userName', user.name, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -101,21 +107,24 @@ export class AuthController {
     // Limpa o cookie no client
     res.clearCookie('refreshTokenId', {
       httpOnly: true,
-      secure: true, // depende do seu ambiente
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       path: '/', // importante: usar o mesmo path que você usou ao setar
     });
     
     res.clearCookie('isAdmin', {
       httpOnly: false,
-      secure: true, // depende do seu ambiente
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       path: '/', // importante: usar o mesmo path que você usou ao setar
     });
     res.clearCookie('userName', {
       httpOnly: false,
-      secure: true, // depende do seu ambiente
-      sameSite: 'strict',
+      secure: true,
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       path: '/', // importante: usar o mesmo path que você usou ao setar
     });
     
@@ -145,13 +154,15 @@ export class AuthController {
     res.cookie('userName', data.name, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', data.isAdmin, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -175,19 +186,22 @@ export class AuthController {
     res.cookie('refreshTokenId', newRefreshTokenId, {
       httpOnly: true,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('userName', user.name, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
-      sameSite: 'strict',
+      sameSite: 'none',
+      domain: this.config.get('COOKIE_DOMAIN'),
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 

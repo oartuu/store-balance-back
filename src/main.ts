@@ -7,10 +7,10 @@ async function bootstrap() {
     app.use(cookieParser());
 
     app.enableCors({
-    origin: "http://localhost:3000", // permite qualquer domínio (em produção, troque pelo domínio do front)
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true, // se for enviar cookies ou auth
-  });
+      origin: process.env.FRONTEND_URL, 
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+    });
   await app.listen(process.env.PORT ?? 3000);
   console.log(`Application is running on port: ${process.env.PORT}`);
 }

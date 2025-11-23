@@ -1,56 +1,51 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider        = "prisma-client-js"
-  output          = "../generated/prisma"
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Company {
-  id        String   @id @default(cuid())
-  name      String   @unique
-  createdAt DateTime @default(now())
-  dayRecords  DayRecord[]
-  users     User[]
+  id         String      @id @default(cuid())
+  name       String      @unique
+  createdAt  DateTime    @default(now())
+  dayRecords DayRecord[]
+  users      User[]
 }
 
 model User {
-  id         String   @id @default(cuid())
-  name       String
-  email      String   @unique
-  password   String
-  isAdmin    Boolean  @default(false)
-  companyId  String
-  company    Company  @relation(fields: [companyId], references: [id])
-  records    Record[]
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  isAdmin       Boolean        @default(false)
+  companyId     String
+  createdAt     DateTime       @default(now())
+  records       Record[]
   refreshTokens RefreshToken[]
-  createdAt  DateTime @default(now())
+  company       Company        @relation(fields: [companyId], references: [id])
 }
+
 model RefreshToken {
-  id         String   @id @default(uuid())
-  expiresAt  Int
-  user       User     @relation(fields: [userId], references: [id])
-  userId     String   
+  id        String @id @default(uuid())
+  expiresAt Int
+  userId    String
+  user      User   @relation(fields: [userId], references: [id])
 }
+
 model DayRecord {
-  id          String     @id @default(uuid())
-  date        DateTime
-  isOpen      Boolean    @default(true)
-
-  companyId   String
-  company     Company    @relation(fields: [companyId], references: [id])
-
-  records     Record[]
-  createdAt   DateTime   @default(now())
-  finishedAt  DateTime?
+  id         String    @id @default(uuid())
+  date       DateTime
+  isOpen     Boolean   @default(true)
+  companyId  String
+  createdAt  DateTime  @default(now())
+  finishedAt DateTime?
+  company    Company   @relation(fields: [companyId], references: [id])
+  records    Record[]
 }
 
 model Record {
@@ -58,32 +53,29 @@ model Record {
   title       String
   type        RecordType
   total       Float        @default(0)
-  origin      RecordOrigin
   userId      String
-  user        User         @relation(fields: [userId], references: [id])
-
   dayRecordId String
-  dayRecord   DayRecord    @relation(fields: [dayRecordId], references: [id])
-
-  items       RecordItem[]
   createdAt   DateTime     @default(now())
+  origin      RecordOrigin
+  dayRecord   DayRecord    @relation(fields: [dayRecordId], references: [id])
+  user        User         @relation(fields: [userId], references: [id])
+  items       RecordItem[]
 }
 
 model RecordItem {
-  id        String    @id @default(uuid())
-  title     String
-  price     Float
-
-  recordId  String
-  record    Record    @relation(fields: [recordId], references: [id])
+  id       String @id @default(uuid())
+  title    String
+  price    Float
+  recordId String
+  record   Record @relation(fields: [recordId], references: [id])
 }
 
 enum RecordType {
   SALE
   WITHDRAW
 }
+
 enum RecordOrigin {
   CASH
   CARD
 }
-
