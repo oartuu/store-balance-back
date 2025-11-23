@@ -28,12 +28,17 @@ model User {
   email      String   @unique
   password   String
   isAdmin    Boolean  @default(false)
-
   companyId  String
   company    Company  @relation(fields: [companyId], references: [id])
   records    Record[]
-
+  refreshTokens RefreshToken[]
   createdAt  DateTime @default(now())
+}
+model RefreshToken {
+  id         String   @id @default(uuid())
+  expiresAt  Int
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   
 }
 model DayRecord {
   id          String     @id @default(uuid())
@@ -53,7 +58,7 @@ model Record {
   title       String
   type        RecordType
   total       Float        @default(0)
-
+  origin      RecordOrigin
   userId      String
   user        User         @relation(fields: [userId], references: [id])
 
@@ -77,3 +82,8 @@ enum RecordType {
   SALE
   WITHDRAW
 }
+enum RecordOrigin {
+  CASH
+  CARD
+}
+
