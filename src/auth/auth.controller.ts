@@ -14,7 +14,6 @@ import { RegisterAdminDto } from './dto/register-admin.dto';
 import { LoginDto } from './dto/login.dto';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import { RefreshDto } from './dto/refresh-tokens.dto';
 import type { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 
@@ -38,7 +37,7 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
     });
 
@@ -46,14 +45,14 @@ export class AuthController {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -73,21 +72,21 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
     });
     res.cookie('userName', user.name, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -155,14 +154,14 @@ export class AuthController {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', data.isAdmin, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
@@ -187,21 +186,21 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('userName', user.name, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
     res.cookie('isAdmin', user.isAdmin, {
       httpOnly: false,
       secure: true,
       sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
+      path: '/',
       maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     });
 
