@@ -33,30 +33,30 @@ export class AuthController {
   ) {
     const { accessToken, refreshTokenId, user } =
       await this.authService.registerAdmin(dto);
-    res.cookie('refreshTokenId', refreshTokenId, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
-    });
+    // res.cookie('refreshTokenId', refreshTokenId, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
+    // });
 
-    res.cookie('userName', user.name, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-    res.cookie('isAdmin', user.isAdmin, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
+    // res.cookie('userName', user.name, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
+    // res.cookie('isAdmin', user.isAdmin, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
 
-    return { accessToken };
+    return { accessToken, refreshTokenId, user };
   }
 
   /* --------------------USER LOGIN-----------------------*/
@@ -68,32 +68,32 @@ export class AuthController {
     const { accessToken, refreshTokenId, user } = await this.authService.login(dto);
 
     // define o cookie com o refreshTokenId
-    res.cookie('refreshTokenId', refreshTokenId, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
-    });
-    res.cookie('userName', user.name, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-    res.cookie('isAdmin', user.isAdmin, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
+    // res.cookie('refreshTokenId', refreshTokenId, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')), // milissegundos
+    // });
+    // res.cookie('userName', user.name, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
+    // res.cookie('isAdmin', user.isAdmin, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
 
 
     // retorna o access token no body (ou outros dados que você quiser)
 
-    return { accessToken };
+    return { accessToken, refreshTokenId, user};
   }
 
   @Post('logout')
@@ -104,28 +104,25 @@ export class AuthController {
     await this.authService.logout(refreshTokenId);
 
     // Limpa o cookie no client
-    res.clearCookie('refreshTokenId', {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
-      path: '/', // importante: usar o mesmo path que você usou ao setar
-    });
+    // res.clearCookie('refreshTokenId', {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    // });
     
-    res.clearCookie('isAdmin', {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
-      path: '/', // importante: usar o mesmo path que você usou ao setar
-    });
-    res.clearCookie('userName', {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      domain: this.config.get('COOKIE_DOMAIN'),
-      path: '/', // importante: usar o mesmo path que você usou ao setar
-    });
+    // res.clearCookie('isAdmin', {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    // });
+    // res.clearCookie('userName', {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    // });
     
 
     return { message: 'Logout successful' };
@@ -150,21 +147,6 @@ export class AuthController {
   async getUserDetails(@Req() req, @Res({ passthrough: true }) res: Response) {
     const data = await this.userService.getUserDetails(req.user);
 
-    res.cookie('userName', data.name, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-    res.cookie('isAdmin', data.isAdmin, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-
     return data;
   }
 
@@ -178,33 +160,33 @@ export class AuthController {
       throw new UnauthorizedException('Refresh token not provided');
     }
 
-    const { accessToken, refreshTokenId: newRefreshTokenId,user } =
+    const { accessToken, refreshTokenId: newRefreshTokenId ,user } =
       await this.authService.refreshTokens(refreshTokenId);
 
     // define o novo cookie
-    res.cookie('refreshTokenId', newRefreshTokenId, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-    res.cookie('userName', user.name, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
-    res.cookie('isAdmin', user.isAdmin, {
-      httpOnly: false,
-      secure: true,
-      sameSite: 'none',
-      path: '/',
-      maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
-    });
+    // res.cookie('refreshTokenId', newRefreshTokenId, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
+    // res.cookie('userName', user.name, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
+    // res.cookie('isAdmin', user.isAdmin, {
+    //   httpOnly: false,
+    //   secure: true,
+    //   sameSite: 'none',
+    //   path: '/',
+    //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
+    // });
 
     // devolve o novo access token
-    return { accessToken };
+    return { accessToken, refreshTokenId: newRefreshTokenId, user };
   }
 }
