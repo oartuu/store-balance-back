@@ -8,7 +8,7 @@ import {
   ArrayNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { RecordType } from '../../../generated/prisma';
+import { RecordType, RecordOrigin } from '../../../generated/prisma';
 
 class RecordItemDto {
   @IsString()
@@ -25,6 +25,9 @@ export class CreateRecordDto {
 
   @IsEnum(RecordType)
   type: RecordType;
+
+  @IsEnum(RecordOrigin)
+  origin: RecordOrigin;
 
   @IsArray()
   @ArrayNotEmpty()

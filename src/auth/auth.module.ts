@@ -15,8 +15,7 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
     JwtModule.register({
-      secret: process.env.JWT_SECRET, 
-      signOptions: { expiresIn: '1h' },
+      secret: process.env.JWT_SECRET,
     }),
   ],
   controllers: [AuthController],

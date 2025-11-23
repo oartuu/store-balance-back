@@ -5,6 +5,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { User } from '../auth/user.decorator';
 import { ListRecordsDto } from './dto/list-records.dto';
 import { ListDayRecordsDto } from './dto/list-day-record.dto';
+import { FinishDayDto } from './dto/finish-day.dto';
 
 @Controller('records')
 @UseGuards(JwtAuthGuard) // Protege todas as rotas do controller
@@ -18,8 +19,8 @@ export class RecordsController {
   }
   /* -------------------- FINALIZAR DIA (ADMIN) -------------------- */
   @Post('finish')
-  async finishDay(@User() user) {
-    return this.recordsService.finishDay(user);
+  async finishDay(@Body() dto: FinishDayDto, @User() user) {
+    return this.recordsService.finishDay(dto,user);
   }
 
   /* -------------------- CRIAR REGISTRO -------------------- */

@@ -9,6 +9,7 @@ import { CreateRecordDto } from './dto/create-record.dto';
 import { RecordType } from '../../generated/prisma'; 
 import { ListDayRecordsDto } from './dto/list-day-record.dto';
 import { ListRecordsDto } from './dto/list-records.dto';
+import { FinishDayDto } from './dto/finish-day.dto';
 
 @Injectable()
 export class RecordsService {
@@ -57,7 +58,7 @@ export class RecordsService {
     });
 
     if (!day) {
-      if (!user.admin){
+      if (!user.isAdmin){
         throw new ForbiddenException('Day not found. Await admin approval.');
       }
       day = await this.prisma.dayRecord.create({
@@ -83,6 +84,7 @@ export class RecordsService {
         title: dto.title,
         type: dto.type,
         total,
+        origin: dto.origin,
         userId: user.userId,
         dayRecordId: day.id,
         items: {
@@ -95,16 +97,16 @@ export class RecordsService {
     return record;
   }
   /* -------------------- FINISH DAY -------------------- */
-  async finishDay(user) {
+  async finishDay(dto:FinishDayDto, user) {
     if (!user.isAdmin) {
       throw new ForbiddenException('Only admins can finish a day.');
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const targetDate = dto.date ? new Date(dto.date) : new Date();
+    targetDate.setHours(0, 0, 0, 0);
 
     const day = await this.prisma.dayRecord.findFirst({
-      where: { date: today, companyId: user.companyId },
+      where: { date: targetDate, companyId: user.companyId },
     });
 
     if (!day) {
@@ -155,7 +157,10 @@ export class RecordsService {
     });
 
     if (!day) {
-      throw new NotFoundException('No records found for this day.');
+      throw new NotFoundException('Dia não iniciado.');
+    }
+    if(day.records.length <= 0){
+      throw new NotFoundException('Ainda não existem registros.');
     }
 
     return day;
