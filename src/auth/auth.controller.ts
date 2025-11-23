@@ -153,9 +153,9 @@ export class AuthController {
   @Post('refresh')
   async refresh(
     @Req() req: Request,
+    @Body('refreshTokenId') refreshTokenId: string,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const refreshTokenId = req.cookies['refreshTokenId'];
     if (!refreshTokenId) {
       throw new UnauthorizedException('Refresh token not provided');
     }
