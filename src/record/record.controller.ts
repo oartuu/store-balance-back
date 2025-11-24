@@ -8,7 +8,7 @@ import { ListDayRecordsDto } from './dto/list-day-record.dto';
 import { FinishDayDto } from './dto/finish-day.dto';
 
 @Controller('records')
-@UseGuards(JwtAuthGuard) // Protege todas as rotas do controller
+@UseGuards(JwtAuthGuard) 
 export class RecordsController {
   constructor(private readonly recordsService: RecordsService) {}
 

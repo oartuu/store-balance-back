@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateRecordDto } from './dto/create-record.dto';
-import { RecordType } from '../../generated/prisma'; 
 import { ListDayRecordsDto } from './dto/list-day-record.dto';
 import { ListRecordsDto } from './dto/list-records.dto';
 import { FinishDayDto } from './dto/finish-day.dto';
@@ -59,7 +58,7 @@ export class RecordsService {
 
     if (!day) {
       if (!user.isAdmin){
-        throw new ForbiddenException('Day not found. Await admin approval.');
+        throw new ForbiddenException('O dia não foi iniciado ainda.');
       }
       day = await this.prisma.dayRecord.create({
         data: {
@@ -71,7 +70,7 @@ export class RecordsService {
     } else if (!day.isOpen) {
       
       throw new BadRequestException(
-        'You cant add records to a closed day.',
+        'O dia já foi iniciado e está fechado.',
       );
     }
 

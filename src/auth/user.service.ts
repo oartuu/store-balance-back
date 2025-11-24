@@ -56,7 +56,6 @@ export class UserService {
       throw new Error('User not found');
     }
 
-    // `user` aqui é um objeto que tem `id` e `name`
     return userData;
   }
 }

@@ -67,7 +67,6 @@ export class AuthController {
   ) {
     const { accessToken, refreshTokenId, user } = await this.authService.login(dto);
 
-    // define o cookie com o refreshTokenId
     // res.cookie('refreshTokenId', refreshTokenId, {
     //   httpOnly: true,
     //   secure: true,
@@ -91,36 +90,32 @@ export class AuthController {
     // });
 
 
-    // retorna o access token no body (ou outros dados que você quiser)
-
     return { accessToken, refreshTokenId, user};
   }
 
   @Post('logout')
   async logout(@Req() req: Request,@Body('refreshTokenId') refreshTokenId: string, @Res({ passthrough: true }) res: Response) {
 
-    // Chama serviço para deletar refresh token no DB
     await this.authService.logout(refreshTokenId);
 
-    // Limpa o cookie no client
     // res.clearCookie('refreshTokenId', {
     //   httpOnly: true,
     //   secure: true,
     //   sameSite: 'none',
-    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    //   path: '/',
     // });
     
     // res.clearCookie('isAdmin', {
     //   httpOnly: false,
     //   secure: true,
     //   sameSite: 'none',
-    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    //   path: '/', 
     // });
     // res.clearCookie('userName', {
     //   httpOnly: false,
     //   secure: true,
     //   sameSite: 'none',
-    //   path: '/', // importante: usar o mesmo path que você usou ao setar
+    //   path: '/', 
     // });
     
 
@@ -185,7 +180,6 @@ export class AuthController {
     //   maxAge: require('ms')(this.config.get('JWT_REFRESH_EXPIRES_IN')),
     // });
 
-    // devolve o novo access token
     return { accessToken, refreshTokenId: newRefreshTokenId, user };
   }
 }
